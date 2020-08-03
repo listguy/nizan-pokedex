@@ -7,9 +7,10 @@ searchButton.addEventListener('click', async () => {
   const { data } = await axios.get(`http://pokeapi.co/api/v2/pokemon/${pokemonId}`);
   const pHeight = data.height;
   const pName = data.name;
-  const pImage = data.sprites.front_default;
-  InsertDataToHtml([pName, pHeight, pImage]);
-  console.log(`name: ${pName}, height: ${pHeight}, image-url: ${pImage}`);
+  const pSpriteFront = data.sprites.front_default;
+  const pSpriteBack = data.sprites.back_default;
+  InsertDataToHtml([pName, pHeight, pSpriteFront, pSpriteBack]);
+  //console.log(`name: ${pName}, height: ${pHeight}, image-url: ${pSpriteFront}`);
   //console.log(data)
 });
 
@@ -17,7 +18,10 @@ function InsertDataToHtml(data) {
   let para = document.querySelector('p');
   para.innerText = `Pokemon name: ${data[0]}, Pokemon height: ${data[1]},`;
   let image = document.createElement('img');
-  image.src = data[2];
+  image.src = data[2]
+  image.border = '1px';
+  image.addEventListener('mouseover', () => image.src = data[3]);
+  image.addEventListener('mouseout', () => image.src=data[2]);
   para.append(image);
 }
 // const searchPokemon = async (pokemonId) => { 
