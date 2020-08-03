@@ -8,34 +8,57 @@ searchButton.addEventListener('click', async () => {
   err404Img.hidden = true;
   try {
     const { data } = await axios.get(`http://pokeapi.co/api/v2/pokemon/${pokemonId}`);
-    const pHeight = data.height;
-    const pName = data.name;
-    const pSpriteFront = data.sprites.front_default;
-    const pSpriteBack = data.sprites.back_default;
-    InsertDataToHtml([pName, pHeight, pSpriteFront, pSpriteBack]);
+    const chars = { // object that contains all the pokemon characteristics
+      pName: data.name,
+      pHeight: data.height,
+      pWeight: data.weight,
+      pSpriteFront: data.sprites.front_default,
+      pSpriteBack: data.sprites.back_default,
+      pTypes: data.types
+    };
+    InsertDataToHtml(chars);
+    // Array.from(chars.pTypes).forEach(type => )
   } catch (e) {
-      console.log("not found!" + e.message);
+      console.log(e);
       err404Img.hidden = false;
   }
-  //console.log(`name: ${pName}, height: ${pHeight}, image-url: ${pSpriteFront}`);
-  //console.log(data)
 });
 
 function InsertDataToHtml(data) {
   let para = document.querySelector('p');
-  para.innerText = `Pokemon name: ${data[0]}, Pokemon height: ${data[1]},`;
+  console.log(data.pTypes[0].type.name);
+  // let types = data.pTypes.reduce((type1, type2) => `${type1} ${type2.type.name},`, '');
+  // creating a clickable span tag for every type name
+  para.innerText = `Pokemon name: ${data.pName}, Pokemon height: ${data.pHeight}, Pokemon weight: ${data.pWeight}, Pokemon types: `;
+  Array.from(data.pTypes).forEach(tObj => {
+    let clickableSpan = document.createElement('span');
+    clickableSpan.innerText = `${tObj.type.name}, `;
+    clickableSpan.addEventListener('click', () =>CreateListOfType(tObj.type.name));
+    para.append(clickableSpan);
+  });
   let image = document.createElement('img');
-  image.src = data[2]
+  image.src = data.pSpriteFront;
   image.border = '1px';
-  image.addEventListener('mouseover', () => image.src = data[3]);
-  image.addEventListener('mouseout', () => image.src=data[2]);
+  image.addEventListener('mouseover', () => image.src = data.pSpriteBack);
+  image.addEventListener('mouseout', () => image.src = data.pSpriteFront);
   para.append(image);
 }
-// const searchPokemon = async (pokemonId) => { 
-//   const { data } = await axios.get(`http://pokeapi.co/api/v2/pokemon/${pokemonId}`);
-//   const pHeight = data.height;
-//   const pName = data.name;
-//   console.log(`name: ${pName}, height: ${pHeight}`);
-//   //console.log(data)
-// };
+
+// creates a list consisting all pokemon of given type
+async function CreateListOfType(type) {
+  const { data } = await axios.get(`https://pokeapi.co/api/v2/type/${type}`); //sends a request to get all pokemons of given type
+  document.querySelector('#typeList')? document.querySelector('#typeList').remove() : "";
+  let h2 = document.createElement('h2');
+  h2.innerText = `${type} Pokemons`;
+  let ul = document.createElement('ul');
+  data.pokemon.forEach(obj => {
+    let li = document.createElement('li');
+    li.innerText = obj.pokemon.name;
+    ul.append(li);
+  })
+  let container = document.createElement('div');
+  container.id = "typeList";
+  container.append(h2, ul);
+  document.querySelector('p').append(container);
+}
 
