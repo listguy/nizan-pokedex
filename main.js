@@ -10,6 +10,7 @@ searchButton.addEventListener('click',  () => {
 });
 
 // gets and updates pokemon data from api to html the page
+// Axios solution
 // async function UpdatePreviewPokemon(pID) {
 //   try {
 //     const { data } = await axios.get(`http://pokeapi.co/api/v2/pokemon/${pID}`);
@@ -29,6 +30,7 @@ searchButton.addEventListener('click',  () => {
 
 // }
 
+// Fetch Solution
 function UpdatePreviewPokemon(pID) {
   fetch(`http://pokeapi.co/api/v2/pokemon/${pID}`)
   .then(res => res.json())
