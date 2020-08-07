@@ -10,24 +10,44 @@ searchButton.addEventListener('click',  () => {
 });
 
 // gets and updates pokemon data from api to html the page
-async function UpdatePreviewPokemon(pID) {
-  try {
-    const { data } = await axios.get(`http://pokeapi.co/api/v2/pokemon/${pID}`);
-    const chars = { // object that contains all the pokemon characteristics
-      pName: data.name,
-      pHeight: data.height,
-      pWeight: data.weight,
-      pSpriteFront: data.sprites.front_default,
-      pSpriteBack: data.sprites.back_default,
-      pTypes: data.types
-    };
-    InsertDataToHtml(chars);
-  } catch (e) {
-      console.log(e);
-      err404Img.hidden = false;
-  }
+// async function UpdatePreviewPokemon(pID) {
+//   try {
+//     const { data } = await axios.get(`http://pokeapi.co/api/v2/pokemon/${pID}`);
+//     const chars = { // object that contains all the pokemon characteristics
+//       pName: data.name,
+//       pHeight: data.height,
+//       pWeight: data.weight,
+//       pSpriteFront: data.sprites.front_default,
+//       pSpriteBack: data.sprites.back_default,
+//       pTypes: data.types
+//     };
+//     InsertDataToHtml(chars);
+//   } catch (e) {
+//       console.log(e);
+//       err404Img.hidden = false;
+//   }
+
+// }
+
+function UpdatePreviewPokemon(pID) {
+  fetch(`http://pokeapi.co/api/v2/pokemon/${pID}`)
+  .then(res => res.json())
+  .then(data => { const chars = { // object that contains all the pokemon characteristics
+    pName: data.name,
+    pHeight: data.height,
+    pWeight: data.weight,
+    pSpriteFront: data.sprites.front_default,
+    pSpriteBack: data.sprites.back_default,
+    pTypes: data.types
+  };
+  InsertDataToHtml(chars);})
+  .catch (e => {
+    console.log(e);
+    err404Img.hidden = false;
+  });
 
 }
+
 // inserts pokemon data to index page
 function InsertDataToHtml(data) {
   let para = document.querySelector('p');
