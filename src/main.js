@@ -6,12 +6,12 @@ const err404Img = document.querySelector('#err404img');
 searchButton.addEventListener('click',  () => { 
   pokemonId = searchField.value || 7;
   err404Img.hidden = true;
-  UpdatePreviewPokemon(pokemonId)
+  updatePreviewPokemon(pokemonId)
 });
 
 // gets and updates pokemon data from api to html the page
 // Axios solution
-// async function UpdatePreviewPokemon(pID) {
+// async function updatePreviewPokemon(pID) {
 //   try {
 //     const { data } = await axios.get(`http://pokeapi.co/api/v2/pokemon/${pID}`);
 //     const chars = { // object that contains all the pokemon characteristics
@@ -22,7 +22,7 @@ searchButton.addEventListener('click',  () => {
 //       pSpriteBack: data.sprites.back_default,
 //       pTypes: data.types
 //     };
-//     InsertDataToHtml(chars);
+//     insertDataToHtml(chars);
 //   } catch (e) {
 //       console.log(e);
 //       err404Img.hidden = false;
@@ -31,7 +31,7 @@ searchButton.addEventListener('click',  () => {
 // }
 
 // Fetch Solution
-function UpdatePreviewPokemon(pID) {
+function updatePreviewPokemon(pID) {
   fetch(`http://pokeapi.co/api/v2/pokemon/${pID}`)
   .then(res => res.json())
   .then(data => { const chars = { // object that contains all the pokemon characteristics
@@ -42,7 +42,7 @@ function UpdatePreviewPokemon(pID) {
     pSpriteBack: data.sprites.back_default,
     pTypes: data.types
   };
-  InsertDataToHtml(chars);})
+  insertDataToHtml(chars);})
   .catch (e => {
     console.log(e);
     err404Img.hidden = false;
@@ -51,7 +51,7 @@ function UpdatePreviewPokemon(pID) {
 }
 
 // inserts pokemon data to index page
-function InsertDataToHtml(data) {
+function insertDataToHtml(data) {
   let para = document.querySelector('p');
   console.log(data.pTypes[0].type.name);
 
@@ -60,7 +60,7 @@ function InsertDataToHtml(data) {
   Array.from(data.pTypes).forEach(tObj => {
     let clickableSpan = document.createElement('span');
     clickableSpan.innerText = `${tObj.type.name}, `;
-    clickableSpan.addEventListener('click', () =>CreateListOfType(tObj.type.name));
+    clickableSpan.addEventListener('click', () =>createListOfType(tObj.type.name));
     para.append(clickableSpan);
   });
   let image = document.createElement('img');
@@ -72,7 +72,7 @@ function InsertDataToHtml(data) {
 }
 
 // creates a list consisting all pokemon of given type
-async function CreateListOfType(type) {
+async function createListOfType(type) {
   const { data } = await axios.get(`https://pokeapi.co/api/v2/type/${type}`);// sends a request to get all pokemons of given type
   document.querySelector('#typeList')? document.querySelector('#typeList').remove() : "";
   let h2 = document.createElement('h2');
@@ -83,7 +83,7 @@ async function CreateListOfType(type) {
     let span = document.createElement('span');
     span.innerText = obj.pokemon.name;
     // adding an event listener for each pokemon in the list to preview his data when it's name is clicked
-    span.addEventListener('click', (e) => UpdatePreviewPokemon(e.target.innerText));
+    span.addEventListener('click', (e) => updatePreviewPokemon(e.target.innerText));
     li.append(span);
     ul.append(li);
   })
